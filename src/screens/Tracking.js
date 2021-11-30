@@ -41,8 +41,8 @@ const OrderDetails=({order_id ,tracking_id,order_weight,order_type,order_price,o
                             Order Price : {order_price} /-
                         </Text>
                     </View>
-                    <View style={{borderRadius:30,height:100,width:100,backgroundColor:"#0F0",justifyContent:"center"}}>
-                        <Text style={{fontWeight:"bold",textAlign:"center",transform:[{rotate:"-30deg"}],fontSize:20}}>
+                    <View style={{borderRadius:30,height:100,backgroundColor:"#0F0",justifyContent:"center",elevation:5}}>
+                        <Text style={{fontWeight:"bold",textAlign:"center",transform:[{rotate:"-30deg"}],fontSize:20,elevation:10}}>
                             {order_status}
                         </Text>
                     </View>
@@ -83,7 +83,7 @@ const OrderDetails=({order_id ,tracking_id,order_weight,order_type,order_price,o
 }
 
 
-const API_URL ="http://10.0.2.2:3001/"
+export const API_URL ="http://10.0.2.2:3001/"
 const Tracking=()=>{
     const [dynamic_placeholder,setPlaceHolder]=useState("order id");
     const [spiner,setSpiner]=useState(false)
@@ -117,13 +117,13 @@ const Tracking=()=>{
                 </Text>
                 <View
                  style={{flexDirection:"row",alignSelf:"center",justifyContent:"space-between",width:Sizes.screenWidth/1.8,marginTop:10}}>
-                    <TouchableOpacity style={styles.BUTTON} onPress={()=>PlaceHolderChange({name:"order id"})}>
-                        <Text style={{fontSize:20}}>
+                    <TouchableOpacity style={[styles.BUTTON,{backgroundColor:Colors.accent3}]} onPress={()=>PlaceHolderChange({name:"order id"})}>
+                        <Text style={{fontSize:20,color:Colors.backColor}}>
                             Order Id
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.BUTTON} onPress={()=>PlaceHolderChange({name:"tracking id"})}>
-                        <Text style={{fontSize:20}}>
+                    <TouchableOpacity style={[styles.BUTTON,{backgroundColor:Colors.cardColor}]} onPress={()=>PlaceHolderChange({name:"tracking id"})}>
+                        <Text style={{fontSize:20,color:Colors.textColor}}>
                             Tracking Id
                         </Text>
                     </TouchableOpacity>
@@ -134,11 +134,15 @@ const Tracking=()=>{
                     onChangeText={(text) =>{setId(text),setSpiner(true)}}
                     onSearchPress={() => console.log("Search Icon is pressed")}
                     spinnerVisibility={spiner}
-                    spinnerColor={Colors.cardColor}
+                    spinnerColor={dynamic_placeholder === 'order id' ? Colors.backColor : Colors.accent1}
                     spinnerSize={30}
                     spinnerType="Wave"
+                    textInputStyle={{
+                        color:dynamic_placeholder==="order id" ? Colors.backColor : Colors.textColor
+                    }}
+                    placeholderTextColor={dynamic_placeholder==="order id" ? Colors.backColor : Colors.textColor}
                     style={{
-                        backgroundColor:"#999",
+                        backgroundColor:dynamic_placeholder === "order id" ? Colors.accent3 : Colors.cardColor,
                         elevation:5
                     }}
                 />
@@ -153,7 +157,8 @@ const Tracking=()=>{
                                     width:Sizes.screenWidth/3,
                                     alignItems:"center",
                                     borderRadius:10,
-                                    marginTop:20
+                                    marginTop:20,
+                                    elevation:5
                                 }}
                                 activeOpacity={0.5}
                                 onPress={()=>SearchByOrderId({order_id:id})}
@@ -164,17 +169,18 @@ const Tracking=()=>{
                             <TouchableOpacity
                                 style={{
                                     padding:10,
-                                    backgroundColor:Colors.accent3,
+                                    backgroundColor:Colors.cardColor,
                                     alignSelf:"center",
                                     width:Sizes.screenWidth/3,
                                     alignItems:"center",
                                     borderRadius:10,
-                                    marginTop:20
+                                    marginTop:20,
+                                    elevation:5
                                 }}
                                 activeOpacity={0.5}
                                 onPress={()=>SearchByTrackingId({tracking_id:id})}
                                 >
-                                    <Text style={{fontSize:18,color:Colors.backColor,fontWeight:"bold"}}>Search</Text>
+                                    <Text style={{fontSize:18,color:Colors.textColor,fontWeight:"bold"}}>Search</Text>
                             </TouchableOpacity>
                         )
                     }
@@ -225,7 +231,7 @@ const styles=StyleSheet.create({
     CARD:{
         borderRadius:20,
         height:Sizes.screenHeiht/1.8,
-        elevation:3
+        elevation:5
     }
 })
 export default Tracking;

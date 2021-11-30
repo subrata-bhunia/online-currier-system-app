@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Text,
     View,
@@ -14,12 +14,12 @@ import { Icon } from 'react-native-elements';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import AVA_AREA_LIST from '../Data/AVA_AREA_LIST';
-
+import SplashScreen from 'react-native-splash-screen'
 // -----------------//
 
 
 
-const CustomHeader=()=>{
+export const CustomHeader=()=>{
     return(
         <View style={styles.CustomHeader}>
             <Text style={styles.GREETINGS}>
@@ -30,6 +30,9 @@ const CustomHeader=()=>{
 }
 // ============== //
 const Home =()=>{
+    useEffect(()=>{
+        SplashScreen.hide();
+    },[])
     const navigation=useNavigation();
     return(
         <View style={{backgroundColor:Colors.backColor,flex:1}}>
@@ -68,11 +71,13 @@ const Home =()=>{
                 {
                     AVA_AREA_LIST.map((item,ind)=>{
                         return(
-                            <View key={ind} style={{backgroundColor:Colors.accent1,margin:3,padding:7,borderRadius:10,elevation:5}}>
-                                <Text style={{fontSize:15,color:Colors.backColor}}>
-                                    {item.name}
-                                </Text>
-                            </View>
+                            item.name === "Select State" ? null : (
+                                <View key={ind} style={{backgroundColor:Colors.accent1,margin:3,padding:7,borderRadius:10,elevation:5}}>
+                                    <Text style={{fontSize:15,color:Colors.backColor}}>
+                                        {item.name}
+                                    </Text>
+                                </View>
+                            )
                         )
                     })
                 }

@@ -5,6 +5,7 @@ import Home from '../screens/Home';
 import Product from '../screens/Product';
 import Tracking from '../screens/Tracking';
 import CheckPrice from '../screens/CheckPrice';
+import Admin from '../screens/Admin';
 
 const AppStack=()=>{
     const Stack=createStackNavigator();
@@ -23,6 +24,7 @@ const AppStack=()=>{
                 headerTitle:"Check Price",
                 headerTitleAlign:"center",
             }} />
+            <Stack.Screen name="Admin" component={Admin} options={{headerShown:false}} />
         </Stack.Navigator>
     )
 }

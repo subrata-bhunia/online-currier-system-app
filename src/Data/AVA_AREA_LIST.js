@@ -1,5 +1,9 @@
 export default [
     {
+      "abbreviation": "",
+      "name": "Select State"
+    },
+    {
       "abbreviation": "OR",
       "name": "Odisha"
     },

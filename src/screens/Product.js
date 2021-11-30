@@ -11,10 +11,12 @@ import { Colors, Sizes } from '../constants/constants';
 import { Card } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import AVA_AREA_LIST from '../Data/AVA_AREA_LIST';
+import axios from 'axios';
+import { API_URL } from './Tracking';
 
 const Product=()=>{
     // ----------SENDER DETAILS-------------- //
-    const [sender_state,setSenderState]=useState("Select You State");
+    const [sender_state,setSenderState]=useState("");
     const [sender_Name,setSenderName]=useState("");
     const [sender_Add,setSenderAdd]=useState("");
     const [sender_Mob,setSenderMob]=useState("");
@@ -25,19 +27,62 @@ const Product=()=>{
     const [tracking_id,setTrackingId]=useState(getRandomInt(999999));
     const [order_weight,setOrderWeight]=useState("");
     const [order_type,setOrderType]=useState("");
+    const [order_status,setOrder_status]=useState("pending");
     // ---------------------RECIVER DETAILS------------------------ //
-    const [reciver_state,setreciverState]=useState("Select You State");
+    const [reciver_state,setreciverState]=useState("");
     const [reciver_Name,setreciverName]=useState("");
     const [reciver_Add,setreciverAdd]=useState("");
     const [reciver_Mob,setreciverMob]=useState("");
     const [reciver_Email,setreciveremail]=useState("");
 
     // -------------------------DATA--------------------------- //
-    const AlertMass=()=>{
-        Alert.alert(
-            `Please note your order id :${orderid} and your tracking id ${tracking_id} `
-        )
+    const sendDataBody={
+        "order_id":`${orderid}`,
+        "tracking_id":`${tracking_id}`,
+        "order_weight":`${order_weight}kg`,
+        "order_type":order_type,
+        "order_price":price,
+        "order_status":order_status,
+        "sender_name":sender_Name,
+        "sender_state":sender_state,
+        "sender_address":sender_Add,
+        "sender_mobile":sender_Mob,
+        "reciver_name":reciver_Name,
+        "reciver_state":reciver_state,
+        "reciver_address":reciver_Add,
+        "reciver_mobile":reciver_Mob
+    
     }
+    // --------------------API CONNECTION------------------------ \\
+    const OrderPlace=()=>{
+        axios({
+            method:"post",
+            url:API_URL+"addOrders",
+            data:{
+                order_id:`${orderid}`,
+                tracking_id:`${tracking_id}`,
+                "order_weight":`${order_weight}kg`,
+                "order_type":order_type,
+                "order_price":price,
+                "order_status":order_status,
+                "sender_name":sender_Name,
+                "sender_state":sender_state,
+                "sender_address":sender_Add,
+                "sender_mobile":sender_Mob,
+                "reciver_name":reciver_Name,
+                "reciver_state":reciver_state,
+                "reciver_address":reciver_Add,
+                "reciver_mobile":reciver_Mob
+            }
+        }).then(res=>{
+            res.data.rowsAffected === 1 ? (
+                alert(`Your Order Id ${orderid}.{"\n"} Your Order has been placed 👋`)
+            ) : (
+                alert("Something went wrong .\nPlease try again 🤦‍♀️")
+            )
+        })
+        .catch(err=>console.log(err))
+    };
     // ----------------Random IDs------------------ //
     function getRandomInt(max) {
         return Math.floor(Math.random() * max)
@@ -47,7 +92,7 @@ const Product=()=>{
     //   },[1000])
     return(
         <View style={{flex:1,backgroundColor:Colors.backColor,padding:10}}>
-        <ScrollView >
+        <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={{fontSize:16,fontWeight:"bold",textAlign:"center",marginVertical:20}}>
                 Sender Details
             </Text>
@@ -130,7 +175,8 @@ const Product=()=>{
                 <TextInput
                     placeholder="Enter Order Weight"
                     style={{borderWidth:0,borderRadius:30,backgroundColor:"#eee"}}
-                    onChangeText={text=>setOrderWeight(text)}
+                    onChangeText={text=>{setOrderWeight(text),setPrice(getRandomInt(999))}}
+                    keyboardType="number-pad"
                     />
             </View>
             <View>
@@ -145,6 +191,7 @@ const Product=()=>{
                                 setOrderType(itemValue)
                             }
                             >
+                                <Picker.Item label="Select Order Type" value=""  />
                                 <Picker.Item label="Percel" value="percel"  />
                                 <Picker.Item label="Document" value="document"  />
                                 {/* <Picker.Item label="Percel" value="percel"  /> */}
@@ -213,9 +260,8 @@ const Product=()=>{
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             </Text>
             {/* Price */}
-            {console.log(reciver_state)}
             {
-                reciver_state === "Select You State" ? null : (
+                order_weight ==="" ? null : (
                     <Card>
                         <Text style={{fontSize:20,fontWeight:"bold"}}>
                             Price :{price} /-
@@ -223,19 +269,47 @@ const Product=()=>{
                     </Card>
                 )
             }
-            <TouchableOpacity
-             style={{
-                 padding:10,
-                 backgroundColor:Colors.accent3,
-                 alignSelf:"center",
-                 width:Sizes.screenWidth/3,
-                 alignItems:"center",
-                 borderRadius:10,marginVertical:10
-            }}
-            onPress={()=>AlertMass()}
-            >
-                <Text style={{fontSize:18,color:Colors.backColor,fontWeight:"bold"}}>Order Place</Text>
-            </TouchableOpacity>
+            {
+                sender_Name==="" || 
+                sender_state==="" || 
+                sender_Mob==="" || 
+                sender_Add==="" || 
+                order_weight === "" || 
+                order_type === "" ||
+                reciver_Name === "" ||
+                reciver_state === "" ||
+                reciver_Mob === "" ||
+                reciver_Add === ""  ? (
+                    <View
+                        style={{
+                            padding:10,
+                            backgroundColor:Colors.accent3,
+                            alignSelf:"center",
+                            width:Sizes.screenWidth/3,
+                            alignItems:"center",
+                            borderRadius:10,marginVertical:10,
+                            opacity:0.5
+                        }}
+                        >
+                            <Text style={{fontSize:18,color:Colors.backColor,fontWeight:"bold"}}>Order Place</Text>
+                        </View>
+                ) : (
+                    <TouchableOpacity
+                        style={{
+                            padding:10,
+                            backgroundColor:Colors.accent3,
+                            alignSelf:"center",
+                            width:Sizes.screenWidth/3,
+                            alignItems:"center",
+                            borderRadius:10,marginVertical:10
+                        }}
+                        // onPress={()=>{AlertMass(),console.log(sendDataBody),OrderPlace()}}
+                        onPress={()=>{OrderPlace()}}
+                        >
+                            <Text style={{fontSize:18,color:Colors.backColor,fontWeight:"bold"}}>Order Place</Text>
+                    </TouchableOpacity>
+                )
+            }
         </ScrollView>
         </View>
     )
